@@ -2,6 +2,8 @@
 
 Sortable UI tables for Rails/ActiveRecord.
 
+![Pagination for ActiveRecord](https://github.com/christianhellsten/arrr-sortable/raw/master/screenshot.png?raw=true "Sortable UI tables for Rails/ActiveRecord")
+
 ## Installation
 
 Add this line to your application's Gemfile:
