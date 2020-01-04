@@ -2,57 +2,34 @@ require "arrr/sortable/version"
 
 module Arrr
   module Sortable
-    def self.for(mapping:, default:)
-      Arrr::Sortable::Configuration.new(mapping: mapping, default: default)
+    def self.for(columns:, default:)
+      Arrr::Sortable::Configuration.new(columns: columns, default: default)
     end
 
-    #
     # Configuration holds the page-specific configuration
-    #
-    # ## Example
-    #
-    #   class ProjectsController < ApplicationController
-    #     before_action :set_project, only: %i[show edit update destroy]
-    #     Sortable = Arrr::Sortable::Configuration.new(
-    #       default: {
-    #         column: :name,
-    #         direction: :asc
-    #       },
-    #       mapping: {
-    #         name: 'projects.name'
-    #       }.freeze
-    #     )
-    #
-    #    def index
-    #      @projects, @sort_by = Sortable.for(
-    #        params: params,
-    #        relation: current_account.projects
-    #      )
-    #    end
-    #
     class Configuration
       attr_reader :default_column
       attr_reader :default_db_column
       attr_reader :default_direction
-      attr_reader :mapping
+      attr_reader :columns
 
       DIRECTIONS = {
         asc: :asc,
         desc: :desc
       }.with_indifferent_access.freeze
 
-      def initialize(mapping:, default:)
-        @mapping = mapping.with_indifferent_access.freeze
+      def initialize(columns:, default:)
+        @columns = columns.with_indifferent_access.freeze
         @default_column = default.fetch(:column)
         @default_direction = default.fetch(:direction)
-        @default_db_column = @mapping.fetch(default_column)
+        @default_db_column = @columns.fetch(default_column)
       end
 
       def for(params:, relation:)
         params = params.permit(:direction, :order_by) if params.respond_to?(:permit)
         direction = DIRECTIONS.fetch(params[:direction], default_direction).to_sym
-        column = (mapping.key?(params[:order_by]) ? params[:order_by] : default_column).to_sym
-        db_column = mapping.fetch(column, default_db_column)
+        column = (columns.key?(params[:order_by]) ? params[:order_by] : default_column).to_sym
+        db_column = columns.fetch(column, default_db_column)
         ordered_relation = relation.order(db_column => direction)
         order_by = Sortable::Table.new(
           column: column,

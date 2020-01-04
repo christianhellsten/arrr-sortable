@@ -31,7 +31,7 @@ class ProjectsController < ApplicationController
       column: :name,
       direction: :asc
     },
-    mapping: {
+    columns: {
       name: 'projects.name'
     }
   )
@@ -53,8 +53,10 @@ table.table
   thead
     tr
       th
-        a href=@table.url_for(self, :name) Name #{@table.icon_for(:name)}
-        a href=@table.url_for(self, :name) Name #{@table.icon_for(:name)}
+        a href=@table.url_for(self, :account) Account #{@table.icon_for(:account)}
+      th
+        a href=@table.url_for(self, :project) Project #{@table.icon_for(:project)}
+      th Roles
       th
 ```
 
